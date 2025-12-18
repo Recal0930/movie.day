@@ -104,7 +104,7 @@
     <div class="verify-container">
         <div class="title-suffix">（1天版）</div>
         <h1 class="main-title">开启观影之旅</h1>
-        <div class="expire-tip">（有效期：中午12：00-次日13：00）</div>
+        <div class="expire-tip">（有效期：中午12:00-次日13:00）</div>
         <input type="text" class="card-input" placeholder="请输入暗号">
         <div class="tip"></div>
         <button class="btn enter-btn">进入</button>
@@ -116,11 +116,11 @@
 
     <script>
         const TARGET_URL = "https://www.ppnix.com/cn/";
-       // 1天版卡密列表（10个6位数字混合乱序，带DAY_前缀）
-const DAY_CARDS = [
-    "DAY_285917", "DAY_632189", "DAY_194635", "DAY_728503", "DAY_519374",
-    "DAY_806249", "DAY_371852", "DAY_942608", "DAY_457136", "DAY_069258"
-];
+        // 1天版卡密列表（带前缀+6位乱序数字）
+        const DAY_CARDS = [
+            "DAY_285917", "DAY_632189", "DAY_194635", "DAY_728503", "DAY_519374",
+            "DAY_806249", "DAY_371852", "DAY_942608", "DAY_457136", "DAY_069258"
+        ];
 
         const [verifyContainer, movieContainer, movieIframe, cardInput, tip, enterBtn] = [
             document.querySelector('.verify-container'),
@@ -132,6 +132,8 @@ const DAY_CARDS = [
         ];
 
         enterBtn.addEventListener('click', () => {
+            // 点击按钮时清空提示
+            tip.textContent = "";
             const input = cardInput.value.trim();
             if (!input) {
                 tip.textContent = "请输入暗号";
@@ -142,28 +144,10 @@ const DAY_CARDS = [
                 return;
             }
 
-            // 验证通过，存储1天有效期（可选，刷新后仍需重新输入）
-            localStorage.setItem('movieSiteVerifyInfo', JSON.stringify({
-                isVerified: true,
-                durationType: 'day',
-                expireTime: Date.now() + 24 * 60 * 60 * 1000
-            }));
-
+            // 验证通过，进入电影页面
             verifyContainer.style.display = "none";
             movieContainer.style.display = "block";
             movieIframe.src = TARGET_URL;
-        });
-
-        // 页面加载检查有效期（可选功能）
-        window.addEventListener('load', () => {
-            const verifyInfo = JSON.parse(localStorage.getItem('movieSiteVerifyInfo'));
-            if (verifyInfo?.isVerified && Date.now() < verifyInfo.expireTime) {
-                verifyContainer.style.display = "none";
-                movieContainer.style.display = "block";
-                movieIframe.src = TARGET_URL;
-            } else if (verifyInfo?.isVerified) {
-                localStorage.removeItem('movieSiteVerifyInfo');
-            }
         });
 
         // 防复制
